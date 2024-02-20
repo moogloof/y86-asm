@@ -15,5 +15,14 @@ class Token {
 
 	// Takes in current address and then returns how much to add to that address
 	int compile(int currentAddr) {
+		switch (type) {
+			case LABEL:
+				return 0;
+				break;
+			case DIRECTIVE:
+				break;
+			case INSTRUCTION:
+				break;
+		}
 	}
 }
