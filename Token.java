@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class Token {
 	enum TokenType {
 		LABEL,
@@ -18,11 +20,19 @@ class Token {
 		switch (type) {
 			case LABEL:
 				return 0;
-				break;
 			case DIRECTIVE:
 				break;
 			case INSTRUCTION:
 				break;
 		}
+		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return "Token{" +
+				"type=" + type +
+				", words=" + Arrays.toString(words) +
+				'}';
 	}
 }
