@@ -32,9 +32,19 @@ class Token {
 				} else if (words[0].equals(".align")) {
 					int alignValue = Integer.decode(words[1]);
 					int leftoverPart = currentAddr % alignValue;
+
 					return (alignValue - leftoverPart) % alignValue;
-				} else if (words[0].equals(".long") || words[0].equals(".quad")) {
+				} else if (words[0].equals(".long")) {
 					int fillValue = Integer.decode(words[1]);
+
+					for (int i = 0; i < 4; i++) {
+						compiled.append((char)(fillValue % 0xff));
+						fillValue /= 0x100;
+					}
+					return 8;
+				} else if (words[0].equals(".quad")) {
+					int fillValue = Integer.decode(words[1]);
+
 					for (int i = 0; i < 8; i++) {
 						compiled.append((char)(fillValue % 0xff));
 						fillValue /= 0x100;
