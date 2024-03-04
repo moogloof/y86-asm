@@ -41,7 +41,7 @@ class Token {
 						compiled.append((char)(fillValue % 0xff));
 						fillValue /= 0x100;
 					}
-					return 8;
+					return 4;
 				} else if (words[0].equals(".quad")) {
 					int fillValue = Integer.decode(words[1]);
 
