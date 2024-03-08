@@ -3,9 +3,15 @@ import java.util.*;
 abstract class Operand {
 	public int bitSize;
 	public int instructionOrder;
-	private static Hashtable<String, Integer> register_table = new Hashtable<>();
+	public boolean label_flag;
+	public String label_name;
+	protected static Hashtable<String, Integer> register_table = new Hashtable<>();
 
 	public abstract long parse(String word);
+
+	public Operand() {
+		label_flag = false;
+	}
 
 	public static void initOperands() {
 		register_table.put("eax", 0);
@@ -60,7 +66,13 @@ class ImmediateOperand extends Operand {
 
 	public long parse(String word) {
 		String filteredWord = word.replace(",", "");
-		return Long.parseLong(filteredWord);
+		try {
+			return Long.decode(filteredWord);
+		} catch (NumberFormatException e) {
+			label_flag = true;
+			label_name = filteredWord;
+			return 0;
+		}
 	}
 }
 
@@ -73,7 +85,7 @@ class MemoryOperand extends Operand {
 	public long parse(String word) {
 		String baseLiteral = word.substring(0, word.indexOf('('));
 		String registerLiteral = word.substring(word.indexOf('(') + 1, word.indexOf(')'));
-		int val = (baseLiteral.equals("")) ? 0 : Long.parseLong(baseLiteral);
+		long val = (baseLiteral.equals("")) ? 0 : Long.decode(baseLiteral);
 		val = (registerLiteral.equals("")) ? val : (val + register_table.get(registerLiteral.substring(1)));
 		return val;
 	}
