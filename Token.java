@@ -29,6 +29,17 @@ class Token {
 	}
 
 	public static void initCompiler() {
+		// Halt instruction
+		instruction_table.put("halt", 0);
+		operands_table.put("halt", new Operand[]{});
+
+		// Nop instruction
+		instruction_table.put("nop", 0x10);
+		operands_table.put("nop", new Operand[]{});
+
+		// Ret instruction
+		instruction_table.put("ret", 0x90);
+		operands_table.put("ret", new Operand[]{});
 	}
 
 	// Takes in current address and then returns how much to add to that address
