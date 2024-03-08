@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Token {
 	enum TokenType {
@@ -7,8 +7,9 @@ class Token {
 		INSTRUCTION
 	}
 
-	private static Hashtable<String, Integer> register_table = new Hashtable<>();
 	private static Hashtable<String, Integer> label_table = new Hashtable<>();
+	private static Hashtable<String, Operand[]> operands_table = new Hashtable<>();
+	private static Hashtable<String, Integer> instruction_table = new Hashtable<>();
 
 	private TokenType type;
 	private String[] words;
@@ -24,23 +25,14 @@ class Token {
 	}
 
 	public static void initCompiler() {
-		register_table.put("eax", 0);
-		register_table.put("ecx", 1);
-		register_table.put("edx", 2);
-		register_table.put("ebx", 3);
-		register_table.put("esi", 6);
-		register_table.put("edi", 7);
-		register_table.put("esp", 4);
-		register_table.put("ebp", 5);
 	}
 
 	// Takes in current address and then returns how much to add to that address
-	int compile(int currentAddr) {
+	public int compile(int currentAddr) {
 		switch (type) {
 			case LABEL:
 				label_table.put(words[0], currentAddr);
 				return 0;
-				break;
 			case DIRECTIVE:
 				if (words[0].equals(".pos")) {
 					// TODO: Handle case where this may be negative, to error out
@@ -67,35 +59,25 @@ class Token {
 					}
 					return 8;
 				}
-				break;
 			case INSTRUCTION:
-				// TODO: make this more efficient, but it may work for now
-				if (words[0].equals("halt")) {
-					compiled.append('\0');
-					return 1;
-				} else if (words[0].equals("nop")) {
-					compiled.append((char)0x10);
-					return 1;
-				} else if (words[0].equals("rrmovl")) {
-					int rA = register_table.get(words[1].substring(1, words[1].length() - 1));
-					int rB = register_table.get(words[2].substring(1));
+				String instruction_type = words[0];
+				int instruction_bin = instruction_table.get(instruction_type);
+				Operand[] operands_list = operands_table.get(instruction_type);
+				int total_size = 0;
+				int instruction_int = 0;
 
-					// TODO: error out for incorrect syntax
-					compiled.append((char)0x20);
-					compiled.append((char)((rA << 4) + rB));
-					return 2;
-				} else if (words[0].equals("irmovl")) {
-					int fillValue = Integer.decode(words[1].substring(1, words[1].length() - 1));
-					int rB = register_table.get(words[2].substring(1));
+				compiled.append((char)instruction_bin);
 
-					compiled.append((char)0x30);
-					compiled.append((char)(0xf0 + rB));
-					for (int i = 0; i < 8; i++) {
-						compiled.append((char)(fillValue & 0xff));
-						fillValue /= 0x100;
-					}
+				for (Operand op : operands_list) {
+					total_size += op.bitSize;
+					instruction_int += (op.parse(word[op.instructionOrder]) << op.bitSize);
 				}
-				// TODO: Error out here
+
+				for (int i = 0; i < total_size / 8; i++) {
+					compiled.append((char)(instruction_int & 0xff));
+					instruction_int >>= 8;
+				}
+
 				return 0;
 		}
 		return 0;
