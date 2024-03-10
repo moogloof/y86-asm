@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.ByteArrayOutputStream;
 
 class Token {
 	enum TokenType {
@@ -104,7 +105,7 @@ class Token {
 		return 0;
 	}
 
-	public String link() {
+	public ByteArrayOutputStream link() {
 		if (label_pos >= 0) {
 			long label_value = label_table.get(label_name);
 
@@ -114,7 +115,11 @@ class Token {
 			}
 		}
 
-		return compiled.toString();
+		ByteArrayOutputStream bin_compiled = new ByteArrayOutputStream();
+		for (int i = 0; i < compiled.length(); i++) {
+			bin_compiled.write(compiled.charAt(i));
+		}
+		return bin_compiled;
 	}
 
 	@Override

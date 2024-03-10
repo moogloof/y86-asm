@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.math.BigInteger;
+import java.io.*;
 
 public class WordTokenizer {
 
@@ -52,17 +54,34 @@ public class WordTokenizer {
     }
 
     public static void main(String[] args) {
-        WordSplitter blob = new WordSplitter("./yasTest.txt");
-        ArrayList<String> x = blob.splitWords();
+        WordSplitter blob = new WordSplitter("./basicTest.txt");
+	try {
+		File outfile = new File("out.bin");
+		FileOutputStream outfile_stream = new FileOutputStream(outfile);
+		ArrayList<String> x = blob.splitWords();
+		long pos = 0;
+		Token.initCompiler();
+		Operand.initOperands();
 
-        WordTokenizer tokenizer = new WordTokenizer();
-        tokenizer.createTokens(x);
-        ArrayList<Token> listy = tokenizer.getListofTokens();
-        for(Token ss : listy) {
-            System.out.println(ss);
-            System.out.println();
-        }
-
+		WordTokenizer tokenizer = new WordTokenizer();
+		tokenizer.createTokens(x);
+		ArrayList<Token> listy = tokenizer.getListofTokens();
+		for(Token ss : listy) {
+		    pos += ss.compile(pos);
+		}
+		for(Token ss : listy) {
+		    System.out.println(ss);
+		    System.out.println();
+		}
+		for(Token ss : listy) {
+		    ByteArrayOutputStream linked_stuff = ss.link();
+		    try {
+			linked_stuff.writeTo(outfile_stream);
+		    } catch (IOException e) {
+		    }
+		}
+	} catch (FileNotFoundException e) {
+	}
     }
 
 
