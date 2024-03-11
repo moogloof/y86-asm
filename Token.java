@@ -68,6 +68,10 @@ class Token {
 		instruction_table.put("rrmovl", 0x20);
 		operands_table.put("rrmovl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
 
+		// Irmovl instruction
+		instruction_table.put("irmovl", 0x30);
+		operands_table.put("irmovl", new Operand[]{new FillAOperand(0), new RegisterBOperand(2), new ImmediateOperand(1)});
+
 		// Cmovle instruction
 		instruction_table.put("cmovle", 0x21);
 		operands_table.put("cmovle", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});

@@ -3,3 +3,4 @@ ret
 nop
 rrmovl %edx, %edi
 cmove %edx, %edi
+irmovl $0x1234, %esi
