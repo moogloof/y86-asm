@@ -34,11 +34,30 @@ public class Assembler {
                 try {
                     linked_stuff.writeTo(outfile_stream);
                 } catch (IOException e) {
+                    System.out.println(e.getMessage());
                 }
             }
             this.outfile = outfile.getAbsolutePath();
         } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IncorrectSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (BadImmediateException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidRegisterException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidDirectiveException e) {
+            System.out.println(e.getMessage());
+        } catch (BadLabelException e) {
+            System.out.println(e.getMessage());
+        } catch (UndefinedInstructionException e) {
+            System.out.println(e.getMessage());
+        } catch (UndefinedLabelException e) {
+            System.out.println(e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(e.getMessage());
         }
+
     }
 
     public String getOutfile() {

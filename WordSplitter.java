@@ -12,7 +12,7 @@ public class WordSplitter {
     public ArrayList<String> splitWords() {
         ArrayList<String> wordsList = new ArrayList<>();
         try {
-            File myObj = new File(filePath); //"./yasTest.txt"
+            File myObj = new File(filePath); //"./yasTest.txt" #comments
             Scanner myReader = new Scanner(myObj);
 
             while (myReader.hasNextLine()) {
@@ -20,7 +20,9 @@ public class WordSplitter {
                 String[] arr = data.split("\s");
                 for ( String ss : arr) {
                     String wee = ss.replaceAll("\\s","");
-                    wordsList.add(wee);
+                    if(!wee.equals("")) {
+                        wordsList.add(wee);
+                    }
                 }
             }
             for ( String ss : wordsList) {
