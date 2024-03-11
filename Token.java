@@ -50,6 +50,8 @@ class Token {
 		this.type = type;
 		this.compiled = new ByteArrayOutputStream();
 
+		words[0] = words[0].toLowerCase();
+
 		label_pos = -1;
 	}
 
