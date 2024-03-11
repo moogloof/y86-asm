@@ -1,5 +1,32 @@
-import java.util.*;
+import java.util.regex.Pattern;
+import java.util.Hashtable;
+import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
+
+// Exception to handle invalid directives
+class InvalidDirectiveException extends Exception {
+	public InvalidDirectiveException(String error_msg) {
+		super(error_msg);
+	}
+}
+// Bad label exception
+class BadLabelException extends Exception {
+	public BadLabelException(String error_msg) {
+		super(error_msg);
+	}
+}
+// Undefined instruction exception
+class UndefinedInstructionException extends Exception {
+	public UndefinedInstructionException(String error_msg) {
+		super(error_msg);
+	}
+}
+// Undefined label exception
+class UndefinedLabelException extends Exception {
+	public UndefinedLabelException(String error_msg) {
+		super(error_msg);
+	}
+}
 
 class Token {
 	enum TokenType {
@@ -14,17 +41,14 @@ class Token {
 
 	private TokenType type;
 	private String[] words;
-	private StringBuilder compiled;
+	private ByteArrayOutputStream compiled;
 	private int label_pos;
 	private String label_name;
 
 	public Token(TokenType type, String[] words) {
 		this.words = words;
 		this.type = type;
-		this.compiled = new StringBuilder();
-
-		for (int i = 0; i < words.length; i++)
-			words[i] = words[i].toLowerCase();
+		this.compiled = new ByteArrayOutputStream();
 
 		label_pos = -1;
 	}
@@ -45,7 +69,7 @@ class Token {
 		// Rrmovl instruction
 		instruction_table.put("rrmovl", 0x20);
 		operands_table.put("rrmovl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
-
+/*
 		// Cmovle instruction
 		instruction_table.put("cmovle", 0x21);
 		operands_table.put("cmovle", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
@@ -69,86 +93,159 @@ class Token {
 		// Cmovg instruction
 		instruction_table.put("cmovg", 0x26);
 		operands_table.put("cmovg", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
-
-		//
+		*/
 	}
 
 	// Takes in current address and then returns how much to add to that address
-	public long compile(long currentAddr) {
+	public long compile(long currentAddr) throws IncorrectSyntaxException, BadImmediateException, InvalidRegisterException, InvalidDirectiveException, BadLabelException, UndefinedInstructionException, ArrayIndexOutOfBoundsException {
 		switch (type) {
 			case LABEL:
+				if (!Pattern.matches("[a-zA-Z0-9_]+:", words[0])) {
+					throw new BadLabelException("label name should be alphanumeric or _");
+				}
 				label_table.put(words[0], currentAddr);
 				return 0;
 			case DIRECTIVE:
 				if (words[0].equals(".pos")) {
-					// TODO: Handle case where this may be negative, to error out
-					return Long.decode(words[1]) - currentAddr;
-				} else if (words[0].equals(".align")) {
-					long alignValue = Long.decode(words[1]);
-					long leftoverPart = currentAddr % alignValue;
+					long fill_len = 0;
 
-					return (alignValue - leftoverPart) % alignValue;
+					try {
+						fill_len = Long.decode(words[1]) - currentAddr;
+					} catch (NumberFormatException e) {
+						throw new InvalidDirectiveException("must have valid address number for position");
+					}
+
+					for (int i = 0; i < fill_len; i++) {
+						compiled.write((byte)0);
+					}
+
+					return fill_len;
+				} else if (words[0].equals(".align")) {
+					long alignValue;
+					long fill_len;
+
+					try {
+						alignValue = Long.decode(words[1]);
+					} catch (NumberFormatException e) {
+						throw new InvalidDirectiveException("must have valid align number");
+					}
+
+					fill_len = currentAddr % alignValue;
+					fill_len = (alignValue - fill_len) % alignValue;
+
+					for (int i = 0; i < fill_len; i++) {
+						compiled.write((byte)0);
+					}
+
+					return fill_len;
 				} else if (words[0].equals(".long")) {
-					int fillValue = Integer.decode(words[1]);
+					int fillValue;
+
+					try {
+						fillValue = Integer.decode(words[1]);
+					} catch (NumberFormatException e) {
+						throw new InvalidDirectiveException("must have valid 32 bit number");
+					}
 
 					for (int i = 0; i < 4; i++) {
-						compiled.append((char)(fillValue & 0xff));
-						fillValue /= 0x100;
+						compiled.write((byte)(fillValue & 0xff));
+						fillValue >>= 8;
 					}
 					return 4;
 				} else if (words[0].equals(".quad")) {
-					long fillValue = Long.decode(words[1]);
+					long fillValue;
+
+					try {
+						fillValue = Long.decode(words[1]);
+					} catch (NumberFormatException e) {
+						throw new InvalidDirectiveException("must have valid 64 bit number");
+					}
 
 					for (int i = 0; i < 8; i++) {
-						compiled.append((char)(fillValue & 0xff));
-						fillValue /= 0x100;
+						compiled.write((byte)(fillValue & 0xff));
+						fillValue >>= 8;
 					}
 					return 8;
 				}
 			case INSTRUCTION:
 				String instruction_type = words[0];
-				int instruction_bin = instruction_table.get(instruction_type);
-				Operand[] operands_list = operands_table.get(instruction_type);
-				int total_size = 0;
-				int instruction_int = 0;
+				int instruction_bin;
 
-				compiled.append((char)instruction_bin);
+				try {
+					instruction_bin = instruction_table.get(instruction_type);
+				} catch (NullPointerException e) {
+					throw new UndefinedInstructionException("no instruction of the name \"" + instruction_type + "\"");
+				}
+
+				Operand[] operands_list = operands_table.get(instruction_type);
+				int total_size = 8;
+
+				// Instruction code comes first
+				compiled.write((byte)instruction_bin);
+
+				// Patch together the byte streams coming from operands
+				byte last_instruction_buffer = 0;
 
 				for (Operand op : operands_list) {
-					total_size += op.bitSize;
-					instruction_int <<= op.bitSize;
-					instruction_int += (op.parse(words[op.instructionOrder]) << op.bitSize);
+					byte[] op_result = op.parse(words[op.instructionOrder]).toByteArray();
+					int op_result_i = 0;
 
 					if (op.label_flag) {
 						label_name = op.label_name;
-						label_pos = (total_size - op.bitSize) / 8;
+						label_pos = (total_size + op.label_offset) / 8;
 					}
+
+					if (total_size % 8 == 0) {
+						for (int i = 0; i < op_result.length - 1; i++) {
+							compiled.write(op_result[i]);
+						}
+
+						if (op.bitSize % 8 == 0) {
+							compiled.write(op_result[op_result.length - 1]);
+						} else {
+							last_instruction_buffer = op_result[op_result.length - 1];
+						}
+					} else {
+						compiled.write(last_instruction_buffer + op_result[0]);
+
+						for (int i = 1; i < op_result.length; i++) {
+							compiled.write(op_result[i]);
+						}
+
+						// Not necessary, but makes it easier to debug for future devs
+						// AKA when you add some instructions outside of the standard ones with weird alignment
+						last_instruction_buffer = 0;
+					}
+
+					total_size += op.bitSize;
 				}
 
-				for (int i = 0; i < total_size / 8; i++) {
-					compiled.append((char)(instruction_int & 0xff));
-					instruction_int >>= 8;
-				}
-
-				return total_size / 8 + 1;
+				return total_size / 8;
 		}
 		return 0;
 	}
 
-	public ByteArrayOutputStream link() {
+	public ByteArrayOutputStream link() throws UndefinedLabelException {
+		byte[] compiled_arr = compiled.toByteArray();
+
 		if (label_pos >= 0) {
-			long label_value = label_table.get(label_name);
+			long label_value;
+
+			try {
+				label_value = label_table.get(label_name);
+			} catch (NullPointerException e) {
+				throw new UndefinedLabelException("label with name \"" + label_name + "\" is undefined");
+			}
 
 			for (int i = 0; i < 8; i++) {
-				compiled.setCharAt(label_pos, (char)(label_value & 0xff));
+				compiled_arr[label_pos + i] = (byte)(label_value & 0xff);
 				label_value >>= 8;
 			}
 		}
 
 		ByteArrayOutputStream bin_compiled = new ByteArrayOutputStream();
-		for (int i = 0; i < compiled.length(); i++) {
-			bin_compiled.write(compiled.charAt(i));
-		}
+		bin_compiled.write(compiled_arr, 0, compiled_arr.length);
+
 		return bin_compiled;
 	}
 

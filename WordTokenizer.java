@@ -67,14 +67,25 @@ public class WordTokenizer {
 		tokenizer.createTokens(x);
 		ArrayList<Token> listy = tokenizer.getListofTokens();
 		for(Token ss : listy) {
-		    pos += ss.compile(pos);
+		    try {
+		    	pos += ss.compile(pos);
+		    } catch (Exception e) {
+			    System.out.println(e.getMessage());
+			    return;
+		    }
 		}
 		for(Token ss : listy) {
 		    System.out.println(ss);
 		    System.out.println();
 		}
 		for(Token ss : listy) {
-		    ByteArrayOutputStream linked_stuff = ss.link();
+		    ByteArrayOutputStream linked_stuff;
+		    try {
+		    	linked_stuff = ss.link();
+		    } catch (Exception e) {
+			    System.out.println(e.getMessage());
+			    return;
+		    }
 		    try {
 			linked_stuff.writeTo(outfile_stream);
 		    } catch (IOException e) {
