@@ -26,10 +26,6 @@ public class Assembler {
                 pos += ss.compile(pos);
             }
             for(Token ss : listy) {
-                System.out.println(ss);
-                System.out.println();
-            }
-            for(Token ss : listy) {
                 ByteArrayOutputStream linked_stuff = ss.link();
                 try {
                     linked_stuff.writeTo(outfile_stream);

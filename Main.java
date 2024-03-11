@@ -2,6 +2,6 @@ public class Main {
 	public static void main(String[] args) {
 		Assembler assembler = new Assembler("yasTest.txt");
 		assembler.assemble();
-		System.out.println(assembler.getOutfile());
+		System.out.println("Compiled to the following path: " + assembler.getOutfile());
 	}
 }

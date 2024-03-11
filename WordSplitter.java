@@ -17,6 +17,7 @@ public class WordSplitter {
 
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
+                if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));}
                 String[] arr = data.split("\s");
                 for ( String ss : arr) {
                     String wee = ss.replaceAll("\\s","");
@@ -24,9 +25,6 @@ public class WordSplitter {
                         wordsList.add(wee);
                     }
                 }
-            }
-            for ( String ss : wordsList) {
-                System.out.println(ss);
             }
             myReader.close();
 

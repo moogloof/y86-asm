@@ -1,9 +1,10 @@
 	.pos 0
 init:
 	irmovl Stack, %esp
-	irmovl Stack, %ebp
+	irmovl Stack, %ebp #comment testing 123
 	call Main
 	halt
+	#can you see this???
 
 	.align 4
 array:
