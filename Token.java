@@ -76,6 +76,26 @@ class Token {
 		instruction_table.put("rmmovl", 0x40);
 		operands_table.put("rmmovl", new Operand[]{new RegisterAOperand(1), new MemoryBOperand(2)});
 
+		// Mrmovl instruction
+		instruction_table.put("mrmovl", 0x50);
+		operands_table.put("mrmovl", new Operand[]{new RegisterBOperand(2), new MemoryAOperand(1)});
+
+		// Add instruction
+		instruction_table.put("addl", 0x60);
+		operands_table.put("addl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Sub instruction
+		instruction_table.put("subl", 0x61);
+		operands_table.put("subl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// And instruction
+		instruction_table.put("andl", 0x62);
+		operands_table.put("andl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Xor instruction
+		instruction_table.put("xorl", 0x63);
+		operands_table.put("xorl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
 		// Cmovle instruction
 		instruction_table.put("cmovle", 0x21);
 		operands_table.put("cmovle", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
@@ -103,6 +123,14 @@ class Token {
 		// Ret instruction
 		instruction_table.put("ret", 0x90);
 		operands_table.put("ret", new Operand[]{});
+
+		// Pushl instruction
+		instruction_table.put("pushl", 0xa0);
+		operands_table.put("pushl", new Operand[]{new RegisterBOperand(1), new FillBOperand(0)});
+
+		// Pushl instruction
+		instruction_table.put("popl", 0xb0);
+		operands_table.put("popl", new Operand[]{new RegisterBOperand(1), new FillBOperand(0)});
 	}
 
 	// Takes in current address and then returns how much to add to that address
