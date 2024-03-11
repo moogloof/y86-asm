@@ -54,7 +54,7 @@ public class WordTokenizer {
     }
 
     public static void main(String[] args) {
-        WordSplitter blob = new WordSplitter("./basicTest.txt");
+        WordSplitter blob = new WordSplitter("./yasTest.txt");
 	try {
 		File outfile = new File("out.bin");
 		FileOutputStream outfile_stream = new FileOutputStream(outfile);

@@ -135,9 +135,12 @@ class RegisterBOperand extends Operand {
 }
 
 class ImmediateOperand extends Operand {
-	public ImmediateOperand(int instructionOrder) {
+	private boolean include_nums;
+
+	public ImmediateOperand(int instructionOrder, boolean include_nums) {
 		bitSize = 64;
 		this.instructionOrder = instructionOrder;
+		this.include_nums = include_nums;
 	}
 
 	public ByteArrayOutputStream parse(String word) throws IncorrectSyntaxException, InvalidRegisterException, BadImmediateException {
@@ -145,10 +148,10 @@ class ImmediateOperand extends Operand {
 		long imm_num = 0;
 
 		// Check if a label
-		if (Pattern.matches("[a-zA-Z]+,", word)) {
+		if (Pattern.matches("[a-zA-Z0-9_]+,", word)) {
 			label_flag = true;
 			label_name = word.substring(0, word.length() - 1);
-		} else {
+		} else if (include_nums) {
 			// Guarantees format for immediate
 			if (!Pattern.matches("\\$.+,", word)) {
 				throw new IncorrectSyntaxException("argument needs to be of the form \"$imm,\"");
@@ -159,6 +162,11 @@ class ImmediateOperand extends Operand {
 			} catch (NumberFormatException e) {
 				throw new BadImmediateException("the immediate number is in an invalid format");
 			}
+		} else if (Pattern.matches("[a-zA-Z0-9_]+", word)) {
+			label_flag = true;
+			label_name = word.substring(0, word.length());
+		} else {
+			throw new BadImmediateException("the label is in a bad format");
 		}
 
 		for (int i = 0; i < 8; i++) {

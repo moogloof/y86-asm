@@ -70,7 +70,7 @@ class Token {
 
 		// Irmovl instruction
 		instruction_table.put("irmovl", 0x30);
-		operands_table.put("irmovl", new Operand[]{new FillAOperand(0), new RegisterBOperand(2), new ImmediateOperand(1)});
+		operands_table.put("irmovl", new Operand[]{new FillAOperand(0), new RegisterBOperand(2), new ImmediateOperand(1, true)});
 
 		// Rmmovl instruction
 		instruction_table.put("rmmovl", 0x40);
@@ -96,6 +96,34 @@ class Token {
 		instruction_table.put("xorl", 0x63);
 		operands_table.put("xorl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
 
+		// Jmp instruction
+		instruction_table.put("jmp", 0x70);
+		operands_table.put("jmp", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Jle instruction
+		instruction_table.put("jle", 0x71);
+		operands_table.put("jle", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Jl instruction
+		instruction_table.put("jl", 0x72);
+		operands_table.put("jl", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Je instruction
+		instruction_table.put("je", 0x73);
+		operands_table.put("je", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Jne instruction
+		instruction_table.put("jne", 0x74);
+		operands_table.put("jne", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Jge instruction
+		instruction_table.put("jge", 0x75);
+		operands_table.put("jge", new Operand[]{new ImmediateOperand(1, false)});
+
+		// Jg instruction
+		instruction_table.put("jg", 0x76);
+		operands_table.put("jg", new Operand[]{new ImmediateOperand(1, false)});
+
 		// Cmovle instruction
 		instruction_table.put("cmovle", 0x21);
 		operands_table.put("cmovle", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
@@ -119,6 +147,10 @@ class Token {
 		// Cmovg instruction
 		instruction_table.put("cmovg", 0x26);
 		operands_table.put("cmovg", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Call instruction
+		instruction_table.put("call", 0x80);
+		operands_table.put("call", new Operand[]{new ImmediateOperand(1, false)});
 
 		// Ret instruction
 		instruction_table.put("ret", 0x90);
