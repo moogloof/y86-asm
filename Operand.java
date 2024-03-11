@@ -100,7 +100,7 @@ class RegisterAOperand extends Operand {
 			throw new InvalidRegisterException("invalid register");
 		}
 
-		reg_output.write((byte)reg_num);
+		reg_output.write((byte)reg_num << 4);
 
 		return reg_output;
 	}
