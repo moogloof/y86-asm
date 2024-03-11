@@ -41,6 +41,36 @@ class Token {
 		// Ret instruction
 		instruction_table.put("ret", 0x90);
 		operands_table.put("ret", new Operand[]{});
+
+		// Rrmovl instruction
+		instruction_table.put("rrmovl", 0x20);
+		operands_table.put("rrmovl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmovle instruction
+		instruction_table.put("cmovle", 0x21);
+		operands_table.put("cmovle", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmovl instruction
+		instruction_table.put("cmovl", 0x22);
+		operands_table.put("cmovl", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmove instruction
+		instruction_table.put("cmove", 0x23);
+		operands_table.put("cmove", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmovne instruction
+		instruction_table.put("cmovne", 0x24);
+		operands_table.put("cmovne", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmovge instruction
+		instruction_table.put("cmovge", 0x25);
+		operands_table.put("cmovge", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		// Cmovg instruction
+		instruction_table.put("cmovg", 0x26);
+		operands_table.put("cmovg", new Operand[]{new RegisterAOperand(1), new RegisterBOperand(2)});
+
+		//
 	}
 
 	// Takes in current address and then returns how much to add to that address

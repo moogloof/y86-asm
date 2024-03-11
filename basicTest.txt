@@ -1,3 +1,5 @@
 halt
 ret
 nop
+rrmovl %eax, %edi
+cmove %eax, %edi
