@@ -50,8 +50,6 @@ class Token {
 		this.type = type;
 		this.compiled = new ByteArrayOutputStream();
 
-		words[0] = words[0].toLowerCase();
-
 		label_pos = -1;
 	}
 
@@ -172,7 +170,7 @@ class Token {
 				if (!Pattern.matches("[a-zA-Z0-9_]+:", words[0])) {
 					throw new BadLabelException("label name should be alphanumeric or _");
 				}
-				label_table.put(words[0], currentAddr);
+				label_table.put(words[0].substring(0, words[0].length() - 1), currentAddr);
 				return 0;
 			case DIRECTIVE:
 				if (words[0].equals(".pos")) {
@@ -237,7 +235,7 @@ class Token {
 					return 8;
 				}
 			case INSTRUCTION:
-				String instruction_type = words[0];
+				String instruction_type = words[0].toLowerCase();
 				int instruction_bin;
 
 				try {
