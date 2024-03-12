@@ -26,4 +26,4 @@ java Main <filename>
 
 ## Example
 The following is an output from running the command on [yasTest.yas](yasTest.yas).
-![Example output]()
+![Example output](screenshot.png)
