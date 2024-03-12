@@ -35,6 +35,7 @@ public class Assembler {
             }
             this.outfile = outfile.getAbsolutePath();
 	    return true;
+        //handle exceptions
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (IncorrectSyntaxException e) {

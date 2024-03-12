@@ -11,19 +11,21 @@ public class WordSplitter {
 
 	public ArrayList<String> splitWords() throws FileNotFoundException {
 		ArrayList<String> wordsList = new ArrayList<>();
-		File myObj = new File(filePath); //"./yasTest.txt" #comments
-	if (!myObj.exists()) {
-		throw new FileNotFoundException("Assembly file at " + filePath + " not found.");
-	}
+		File myObj = new File(filePath); //"./yasTest.txt"
+		//throw exception if file not  found
+		if (!myObj.exists()) {
+			throw new FileNotFoundException("Assembly file at " + filePath + " not found.");
+		}
 		Scanner myReader = new Scanner(myObj);
 
+		// loop through each line
 		while (myReader.hasNextLine()) {
 		String data = myReader.nextLine();
-		if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));}
-		String[] arr = data.split("\\s");
+		if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));} // to make sure we can have comments
+		String[] arr = data.split("\\s"); //split by any white space
 		for ( String ss : arr) {
-			String wee = ss.replaceAll("\\s","");
-			if(!wee.equals("")) {
+			String wee = ss.replaceAll("\\s",""); // replace all white space with nothing
+			if(!wee.equals("")) { //make sure there are no extra white spaces
 			wordsList.add(wee);
 			}
 		}
