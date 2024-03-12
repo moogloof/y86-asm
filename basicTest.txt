@@ -1,7 +1,5 @@
-halt
-ret
-nop
-rrmovl %edx, %edi
-cmove %edx, %edi
 irmovl $0x1234, %esi
-rmmovl %ebx, 0x2345(%ecx)
+irmovl $4, %esi
+irmovl $4, %esi
+irmovl $34, %esi
+irmovl $-1, %esi

@@ -76,7 +76,7 @@ class Token {
 
 		// Mrmovl instruction
 		instruction_table.put("mrmovl", 0x50);
-		operands_table.put("mrmovl", new Operand[]{new RegisterBOperand(2), new MemoryAOperand(1)});
+		operands_table.put("mrmovl", new Operand[]{new RegisterAOperand(2, true), new MemoryAOperand(1)});
 
 		// Add instruction
 		instruction_table.put("addl", 0x60);
@@ -167,8 +167,8 @@ class Token {
 	public long compile(long currentAddr) throws IncorrectSyntaxException, BadImmediateException, InvalidRegisterException, InvalidDirectiveException, BadLabelException, UndefinedInstructionException, ArrayIndexOutOfBoundsException {
 		switch (type) {
 			case LABEL:
-				if (!Pattern.matches("[a-zA-Z0-9_]+:", words[0])) {
-					throw new BadLabelException("label name should be alphanumeric or _");
+				if (!Pattern.matches("[\\.a-zA-Z_][a-zA-Z0-9_]*:", words[0])) {
+					throw new BadLabelException("label name should be alphanumeric or _ and start with an alphabet, ., or _ character");
 				}
 				label_table.put(words[0].substring(0, words[0].length() - 1), currentAddr);
 				return 0;

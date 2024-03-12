@@ -157,7 +157,7 @@ class ImmediateOperand extends Operand {
 		long imm_num = 0;
 
 		// Check if a label
-		if (Pattern.matches("[a-zA-Z0-9_]+,", word)) {
+		if (Pattern.matches("[\\.a-zA-Z_][a-zA-Z0-9_]*,", word)) {
 			label_flag = true;
 			label_name = word.substring(0, word.length() - 1);
 		} else if (include_nums) {
@@ -171,7 +171,7 @@ class ImmediateOperand extends Operand {
 			} catch (NumberFormatException e) {
 				throw new BadImmediateException("the immediate number is in an invalid format");
 			}
-		} else if (Pattern.matches("[a-zA-Z0-9_]+", word)) {
+		} else if (Pattern.matches("[\\.a-zA-Z_][a-zA-Z0-9_]*", word)) {
 			label_flag = true;
 			label_name = word.substring(0, word.length());
 		} else {

@@ -16,6 +16,7 @@ Main:
 	pushl %ebp
 	rrmovl %esp, %ebp
 	irmovl $4, %eax
+	rmmovl %edx, (%ecx)
 	pushl %eax
 	irmovl array, %edx
 	pushl %edx
