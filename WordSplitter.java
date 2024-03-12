@@ -9,30 +9,27 @@ public class WordSplitter {
         filePath = fileName;
     }
 
-    public ArrayList<String> splitWords() {
+    public ArrayList<String> splitWords() throws FileNotFoundException {
         ArrayList<String> wordsList = new ArrayList<>();
-        try {
-            File myObj = new File(filePath); //"./yasTest.txt" #comments
-            Scanner myReader = new Scanner(myObj);
+        File myObj = new File(filePath); //"./yasTest.txt" #comments
+	if (!myObj.exists()) {
+		throw new FileNotFoundException("Assembly file at " + filePath + " not found.");
+	}
+        Scanner myReader = new Scanner(myObj);
 
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));}
-                String[] arr = data.split("\s");
-                for ( String ss : arr) {
-                    String wee = ss.replaceAll("\\s","");
-                    if(!wee.equals("")) {
-                        wordsList.add(wee);
-                    }
-                }
+        while (myReader.hasNextLine()) {
+        String data = myReader.nextLine();
+        if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));}
+        String[] arr = data.split("\s");
+        for ( String ss : arr) {
+            String wee = ss.replaceAll("\\s","");
+            if(!wee.equals("")) {
+                wordsList.add(wee);
             }
-            myReader.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
-        return wordsList;
+        }
+        myReader.close();
+	return wordsList;
     }
 
     public static void main(String[] args) {

@@ -1,6 +1,5 @@
 	.pos 0
-init:
-	irmovl Stack, %esp
+init:	irmovl Stack, %esp
 	irmovl Stack, %ebp #comment testing 123
 	call Main
 	halt

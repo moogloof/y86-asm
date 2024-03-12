@@ -9,7 +9,7 @@ public class Assembler {
         this.infile = inflile;
     }
 
-    public void assemble() {
+    public boolean assemble() {
         WordSplitter blob = new WordSplitter(infile);
         try {
             File outfile = new File("out.bin");
@@ -34,6 +34,7 @@ public class Assembler {
                 }
             }
             this.outfile = outfile.getAbsolutePath();
+	    return true;
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (IncorrectSyntaxException e) {
@@ -54,6 +55,7 @@ public class Assembler {
             System.out.println(e.getMessage());
         }
 
+	return false;
     }
 
     public String getOutfile() {
