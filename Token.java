@@ -156,11 +156,11 @@ class Token {
 
 		// Pushl instruction
 		instruction_table.put("pushl", 0xa0);
-		operands_table.put("pushl", new Operand[]{new RegisterBOperand(1), new FillBOperand(0)});
+		operands_table.put("pushl", new Operand[]{new RegisterAOperand(1, true), new FillBOperand(0)});
 
 		// Pushl instruction
 		instruction_table.put("popl", 0xb0);
-		operands_table.put("popl", new Operand[]{new RegisterBOperand(1), new FillBOperand(0)});
+		operands_table.put("popl", new Operand[]{new RegisterAOperand(1, true), new FillBOperand(0)});
 	}
 
 	// Takes in current address and then returns how much to add to that address

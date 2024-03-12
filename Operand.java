@@ -80,17 +80,26 @@ class FillBOperand extends Operand {
 }
 
 class RegisterAOperand extends Operand {
+	private boolean only_operand;
+
 	public RegisterAOperand(int instructionOrder) {
 		bitSize = 4;
 		this.instructionOrder = instructionOrder;
+		this.only_operand = false;
+	}
+
+	public RegisterAOperand(int instructionOrder, boolean only_operand) {
+		this(instructionOrder);
+		this.only_operand = only_operand;
 	}
 
 	public ByteArrayOutputStream parse(String word) throws IncorrectSyntaxException, InvalidRegisterException, BadImmediateException {
 		ByteArrayOutputStream reg_output = new ByteArrayOutputStream();
 		int reg_num;
+		String reg_arg_pattern = only_operand ? "%[a-z]{3}" : "%[a-z]{3},";
 
 		// Guarantees format
-		if (!Pattern.matches("%[a-z]{3},", word)) {
+		if (!Pattern.matches(reg_arg_pattern, word)) {
 			throw new IncorrectSyntaxException("argument needs to be of the form \"%reg,\"");
 		}
 

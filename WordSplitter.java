@@ -20,7 +20,7 @@ public class WordSplitter {
 		while (myReader.hasNextLine()) {
 		String data = myReader.nextLine();
 		if(data.contains("#")) {data = data.substring(0,data.indexOf("#"));}
-		String[] arr = data.split("\s");
+		String[] arr = data.split("\\s");
 		for ( String ss : arr) {
 			String wee = ss.replaceAll("\\s","");
 			if(!wee.equals("")) {
