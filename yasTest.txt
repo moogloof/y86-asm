@@ -11,12 +11,13 @@ array:
 	.long 0xc0
 	.long 0xb00
 	.long 0xa000
+	.quad 0xfeedbeef
 
 Main:
 	pushl %ebp
 	rrmovl %esp, %ebp
 	irmovl $4, %eax
-	rmmovl %edx, (%ecx)
+	rmmovl %edx, array(%ecx)
 	pushl %eax
 	irmovl array, %edx
 	pushl %edx
@@ -45,5 +46,5 @@ End:
 	popl %ebp
 	ret
 
-.pos 0x100
+.pos 0x120
 Stack:

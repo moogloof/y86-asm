@@ -260,6 +260,12 @@ class Token {
 					if (op.label_flag) {
 						label_name = op.label_name;
 						label_pos = (total_size + op.label_offset) / 8;
+
+						// For some reason, java will just copy and past objects if they have an identical construction
+						// Java just loves having all sorts of unseen side effects
+						// So I pretty much have to treat this flag as a static variable, which is ungood
+						// I'm 99.999% sure this isn't the case with the other operands
+						op.label_flag = false;
 					}
 
 					if (total_size % 8 == 0) {
